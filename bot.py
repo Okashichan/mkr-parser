@@ -109,7 +109,8 @@ def get_weeks(message):
         for d in data:
             d = d.replace("_", "\\_").replace("*", "\\*").replace("[", "\\[").replace("`", "\\`")
             bot.send_message(message.chat.id, f'`{d}`', parse_mode='MarkdownV2')
-
+    else: 
+        bot.send_message(message.chat.id, 'Для начала укажите ID и URL. Как это сделать? /info')
     print('get_weeks executed by:', query.get('user_name'))
 
 
@@ -129,6 +130,8 @@ def get_week(message):
             data = get_week_data(id=university_id, url=university_url, week=command[1].strip())
             data = data.replace("_", "\\_").replace("*", "\\*").replace("[", "\\[").replace("`", "\\`")
             bot.send_message(message.chat.id, f'`{data}`', parse_mode='MarkdownV2')
+    else: 
+        bot.send_message(message.chat.id, 'Для начала укажите ID и URL. Как это сделать? /info')
 
     print('get_weeks executed by:', query.get('user_name'))
 
