@@ -141,7 +141,7 @@ def get_weeks_optimized(message):
 
             bot.send_message(message.chat.id, f'`{d1}`', parse_mode='MarkdownV2')
             bot.send_message(message.chat.id, f'`{d2}`', parse_mode='MarkdownV2')
-            bot.send_message(message.chat.id, '`----------------------------------`', parse_mode='MarkdownV2')
+            bot.send_message(message.chat.id, '`'+'-'*32+'`', parse_mode='MarkdownV2')
     else: 
         bot.send_message(message.chat.id, 'Для начала укажите ID и URL. Как это сделать? /info')
     print('get_weeks executed by:', query.get('user_name'))
@@ -168,8 +168,8 @@ def get_week(message):
             try:
                 data = get_week_data(id=university_id, url=university_url, week=command[1].strip())
             except:
-                bot.send_message(message.chat.id, '`Попытка парсинга ни к чему не привела\\. Возможно ваш конфиг настроен не правильно\\.`', parse_mode='MarkdownV2')
-
+                bot.send_message(message.chat.id, '`Могут быть только такие недели: W1, W2, W3, W4, W5.\nПо умолчанию показывается неделя W1 - то есть, первая неделя\\.`', parse_mode='MarkdownV2')
+                return
             data = data.replace("_", "\\_").replace("*", "\\*").replace("[", "\\[").replace("`", "\\`")
 
             bot.send_message(message.chat.id, f'`{data}`', parse_mode='MarkdownV2')
@@ -192,24 +192,25 @@ def get_week_optimized(message):
                 d1, d2 = get_week_data_optimized(id=university_id, url=university_url)
             except:
                 bot.send_message(message.chat.id, '`Попытка парсинга ни к чему не привела\\. Возможно ваш конфиг настроен не правильно\\.`', parse_mode='MarkdownV2')
-            
+                return
+
             d1 = d1.replace("_", "\\_").replace("*", "\\*").replace("[", "\\[").replace("`", "\\`")
             d2 = d2.replace("_", "\\_").replace("*", "\\*").replace("[", "\\[").replace("`", "\\`")
 
             bot.send_message(message.chat.id, f'`{d1}`', parse_mode='MarkdownV2')
-            bot.send_message(message.chat.id, '`----------------------------------`', parse_mode='MarkdownV2')
+            bot.send_message(message.chat.id, '`'+'-'*32+'`', parse_mode='MarkdownV2')
             bot.send_message(message.chat.id, f'`{d2}`', parse_mode='MarkdownV2')
         else:
             try:
                 d1, d2 = get_week_data_optimized(id=university_id, url=university_url, week=command[1].strip())
             except:
                 bot.send_message(message.chat.id, '`Могут быть только такие недели: W1, W2, W3, W4, W5.\nПо умолчанию показывается неделя W1 - то есть, первая неделя\\.`', parse_mode='MarkdownV2')
-                
+                return
             d1 = d1.replace("_", "\\_").replace("*", "\\*").replace("[", "\\[").replace("`", "\\`")
             d2 = d2.replace("_", "\\_").replace("*", "\\*").replace("[", "\\[").replace("`", "\\`")
 
             bot.send_message(message.chat.id, f'`{d1}`', parse_mode='MarkdownV2')
-            bot.send_message(message.chat.id, '`----------------------------------`', parse_mode='MarkdownV2')
+            bot.send_message(message.chat.id, '`'+'-'*32+'`', parse_mode='MarkdownV2')
             bot.send_message(message.chat.id, f'`{d2}`', parse_mode='MarkdownV2')
     else: 
         bot.send_message(message.chat.id, 'Для начала укажите ID и URL. Как это сделать? /info')
