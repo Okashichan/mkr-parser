@@ -1,6 +1,6 @@
 FROM python:slim
 
-WORKDIR /coursework-app
+WORKDIR /app
 
 COPY . .
 
