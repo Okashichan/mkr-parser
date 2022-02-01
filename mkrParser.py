@@ -1,9 +1,14 @@
 # Huge help by https://stackoverflow.com/users/15568504/simpleapp
 # Solution https://stackoverflow.com/questions/70856448/python-bs4-lxml-parsing-table
 import pandas as pd
-from selenium import webdriver
-from webdriver_manager.firefox import GeckoDriverManager
 from io import BytesIO
+from selenium import webdriver
+from selenium.webdriver import FirefoxOptions
+from webdriver_manager.firefox import GeckoDriverManager
+
+
+opts = FirefoxOptions()
+opts.add_argument("--headless")
 
 df_header = [ 'Day', 'W1', 'W2', 'W3', 'W4', 'W5' ]
 search = 'time-table/student?id='
@@ -73,8 +78,8 @@ def get_week_data_optimized(url, id, week='W1'):
 
 
 def get_weeks_data_img(url, id, search=search):
-    fox = webdriver.Firefox(executable_path=GeckoDriverManager().install())
-    
+    fox = webdriver.Firefox(executable_path=GeckoDriverManager().install(), options=opts)
+
     try:
         fox.get(url+search+id)
         image = BytesIO(fox.find_element_by_tag_name('table').screenshot_as_png)
@@ -85,3 +90,5 @@ def get_weeks_data_img(url, id, search=search):
     fox.close()
 
     return image
+
+#get_weeks_data_img('http://portal.ksada.org:8090/', '5598')
