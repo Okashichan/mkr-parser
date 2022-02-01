@@ -1,7 +1,9 @@
+from fileinput import filename
+from stat import filemode
 import telebot
 from config import TELEGRAM_BOT_TOKEN
 from mongo import collection
-from mkrParser import get_week_data, get_weeks_data, get_weeks_data_optimized, get_week_data_optimized
+from mkrParser import get_week_data, get_weeks_data, get_weeks_data_optimized, get_week_data_optimized, get_weeks_data_img
 
 bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN)
 
@@ -216,3 +218,67 @@ def get_week_optimized(message):
         bot.send_message(message.chat.id, 'Для начала укажите ID и URL. Как это сделать? /info')
 
     print('get_weeks executed by:', query.get('user_name'))
+
+
+@bot.message_handler(commands=['get_weeks_optimized'])
+def get_weeks_optimized(message):
+    query = collection.find_one({'user_id': message.chat.id})
+    university_id = query.get('university_id')
+    university_url = query.get('university_url')
+
+    if university_id and university_url:
+        try:
+            dt1, dt2 = get_weeks_data_optimized(id=university_id, url=university_url)
+        except:
+            bot.send_message(message.chat.id, '`Попытка парсинга ни к чему не привела\\. Возможно ваш конфиг настроен не правильно\\.`', parse_mode='MarkdownV2')
+
+        for d1, d2 in zip(dt1,dt2):
+            d1 = d1.replace("_", "\\_").replace("*", "\\*").replace("[", "\\[").replace("`", "\\`")
+            d2 = d2.replace("_", "\\_").replace("*", "\\*").replace("[", "\\[").replace("`", "\\`")
+
+            bot.send_message(message.chat.id, f'`{d1}`', parse_mode='MarkdownV2')
+            bot.send_message(message.chat.id, f'`{d2}`', parse_mode='MarkdownV2')
+            bot.send_message(message.chat.id, '`'+'-'*32+'`', parse_mode='MarkdownV2')
+    else: 
+        bot.send_message(message.chat.id, 'Для начала укажите ID и URL. Как это сделать? /info')
+    print('get_weeks executed by:', query.get('user_name'))
+
+
+@bot.message_handler(commands=['get_weeks_img'])
+def get_weeks_img(message):
+    query = collection.find_one({'user_id': message.chat.id})
+    university_id = query.get('university_id')
+    university_url = query.get('university_url')
+
+    if university_id and university_url:
+        try:
+            bot.send_message(message.chat.id, 'Обрабатываю запрос...')
+            img = get_weeks_data_img(id=university_id, url=university_url)
+
+            bot.send_photo(message.chat.id, img)
+        except:
+            bot.send_message(message.chat.id, 'Не удалось получить скриншот расписания.') 
+    else: 
+        bot.send_message(message.chat.id, 'Для начала укажите ID и URL. Как это сделать? /info')
+
+    print('get_weeks_img executed by:', query.get('user_name'))
+
+
+@bot.message_handler(commands=['get_weeks_img_file'])
+def get_weeks_img_file(message):
+    query = collection.find_one({'user_id': message.chat.id})
+    university_id = query.get('university_id')
+    university_url = query.get('university_url')
+
+    if university_id and university_url:
+        try:
+            bot.send_message(message.chat.id, 'Обрабатываю запрос...')
+            img = get_weeks_data_img(id=university_id, url=university_url)
+
+            bot.send_document(message.chat.id, img)
+        except:
+            bot.send_message(message.chat.id, 'Не удалось получить скриншот расписания.') 
+    else: 
+        bot.send_message(message.chat.id, 'Для начала укажите ID и URL. Как это сделать? /info')
+
+    print('get_weeks_img_file executed by:', query.get('user_name'))

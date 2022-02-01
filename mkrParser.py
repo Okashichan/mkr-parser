@@ -1,11 +1,15 @@
 # Huge help by https://stackoverflow.com/users/15568504/simpleapp
 # Solution https://stackoverflow.com/questions/70856448/python-bs4-lxml-parsing-table
 import pandas as pd
+from selenium import webdriver
+from webdriver_manager.firefox import GeckoDriverManager
+from io import BytesIO
 
-df_header=['Day','W1','W2','W3','W4','W5']
+df_header = [ 'Day', 'W1', 'W2', 'W3', 'W4', 'W5' ]
+search = 'time-table/student?id='
 
 
-def parse(url, id, search='time-table/student?id='):
+def parse(url, id, search=search):
 
     table_list=pd.read_html(url+search+id, attrs = {'id': 'timeTable'}, flavor='lxml')
 
@@ -66,3 +70,18 @@ def get_week_data_optimized(url, id, week='W1'):
     df_final.loc[:,[week]] = df_final.loc[:,[week]].replace(r'[0-9]{2}:[0-9]{2}-[0-9]{2}:[0-9]{2}', '', regex=True)
 
     return [df_final.loc[:,['Day']].to_markdown(index=False),df_final.loc[:,[week]].to_markdown(index=False)]
+
+
+def get_weeks_data_img(url, id, search=search):
+    fox = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+    
+    try:
+        fox.get(url+search+id)
+        image = BytesIO(fox.find_element_by_tag_name('table').screenshot_as_png)
+        image.name = id + '.png'
+    except:
+        fox.close()
+
+    fox.close()
+
+    return image
